@@ -9,6 +9,7 @@ class Visualizer:
     # клас для побудови графіків
 
     def __init__(self, folder):
+        # конструктор: запам'ятовуємо папку і створюємо її, якщо її немає
         self.folder = folder
         if not os.path.exists(folder):
             os.mkdir(folder)

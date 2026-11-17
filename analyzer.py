@@ -12,6 +12,7 @@ class BookAnalyzer:
     # клас для очищення і аналізу даних
 
     def __init__(self):
+        # конструктор: спочатку даних немає
         self.__df = None   # тут буде таблиця з книгами
 
     def load_data(self, books):
@@ -38,6 +39,7 @@ class BookAnalyzer:
         return len(self.__df) > 0
 
     def get_data(self):
+        # повертаємо таблицю з даними (доступ до приватного атрибута)
         return self.__df
 
     def get_stats(self):

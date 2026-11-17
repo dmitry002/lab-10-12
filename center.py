@@ -1,11 +1,13 @@
-# main.py - головна програма з меню
+# center.py - головна програма з меню
 
+# підключаємо бібліотеку і свої модулі
 import requests
 
 from scraper import BookScraper
 from analyzer import BookAnalyzer
 from visualizer import Visualizer
 
+# адреса сайту і папка для результатів
 URL = "https://books.toscrape.com/"
 FOLDER = "results"
 
@@ -24,6 +26,7 @@ def input_number(text, min_value, max_value):
 
 
 def show_menu():
+    # виводимо пункти меню
     print()
     print("===== АНАЛІЗ КНИЖКОВОГО САЙТУ =====")
     print("1 - Зібрати дані з сайту")
@@ -36,30 +39,37 @@ def show_menu():
 
 
 def main():
+    # створюємо об'єкти трьох класів
     scraper = BookScraper(URL)
     analyzer = BookAnalyzer()
     visualizer = Visualizer(FOLDER)
 
+    # головний цикл: показуємо меню, поки користувач не вибере 0
     while True:
         show_menu()
         choice = input("Ваш вибір: ")
 
         try:
+            # 0 - вихід з програми
             if choice == "0":
                 print("Роботу завершено")
                 break
 
+            # 1 - збір даних з сайту і їх очищення
             elif choice == "1":
                 pages = int(input_number("Скільки сторінок зібрати (1-50)? ", 1, 50))
                 books = scraper.scrape(pages)
                 analyzer.load_data(books)
 
+            # 6 - завантаження даних з раніше збереженого файлу
             elif choice == "6":
                 analyzer.load_csv(FOLDER + "/books.csv")
 
+            # пункти 2-5 працюють тільки якщо дані вже є
             elif choice in ["2", "3", "4", "5"] and not analyzer.has_data():
                 print("Спочатку зберіть дані (пункт 1) або завантажте їх з файлу (пункт 6)")
 
+            # 2 - статистика, кількість книг за рейтингом і топ-5 найдорожчих
             elif choice == "2":
                 print()
                 print("--- Статистика ---")
@@ -77,6 +87,7 @@ def main():
                 for index, row in top.iterrows():
                     print(row["title"][:50], "-", row["price"], "£, рейтинг", row["rating"])
 
+            # 3 - пошук книг у діапазоні цін
             elif choice == "3":
                 min_price = input_number("Мінімальна ціна: ", 0, 1000)
                 max_price = input_number("Максимальна ціна: ", min_price, 1000)
@@ -91,6 +102,7 @@ def main():
                         print("... показано 20 з", len(found), "(всі книги є у файлі books.csv)")
                         break
 
+            # 4 - побудова і збереження графіків
             elif choice == "4":
                 df = analyzer.get_data()
                 visualizer.price_histogram(df)
@@ -98,9 +110,11 @@ def main():
                 visualizer.price_rating_plot(analyzer.price_by_rating())
                 print("Графіки збережено у папці", FOLDER)
 
+            # 5 - збереження результатів у файли
             elif choice == "5":
                 analyzer.save(FOLDER)
 
+            # якщо ввели номер, якого немає в меню
             else:
                 print("Немає такого пункту меню")
 
@@ -119,4 +133,5 @@ def main():
             print("Непередбачена помилка:", e)
 
 
+# запуск програми
 main()

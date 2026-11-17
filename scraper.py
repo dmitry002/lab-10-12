@@ -11,6 +11,7 @@ class BookScraper:
     # клас який завантажує сторінки і дістає з них книги
 
     def __init__(self, base_url):
+        # конструктор: запам'ятовуємо адресу сайту
         self.__base_url = base_url   # адреса сайту (приватна)
         self.books = []
 
